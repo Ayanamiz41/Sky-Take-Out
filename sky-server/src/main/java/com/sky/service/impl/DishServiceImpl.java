@@ -115,6 +115,7 @@ public class DishServiceImpl implements DishService {
      * 根据id修改菜品基本信息和对应的口味信息
      * @param dishDTO
      */
+    @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
@@ -140,6 +141,20 @@ public class DishServiceImpl implements DishService {
      */
     public List<Dish> getByCategoryId(Long categoryId) {
         return dishMapper.getByCategoryId(categoryId);
+    }
+
+    /**
+     * 修改菜品状态
+     * @param status
+     * @param id
+     * @return
+     */
+    public void updateStatus(Integer status, Long id) {
+        Dish dish = Dish.builder().
+                id(id).
+                status(status).
+                build();
+        dishMapper.update(dish);
     }
 
 
