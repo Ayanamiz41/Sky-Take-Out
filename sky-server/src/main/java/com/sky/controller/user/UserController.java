@@ -2,6 +2,7 @@ package com.sky.controller.user;
 
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.UserLoginDTO;
+import com.sky.entity.Setmeal;
 import com.sky.entity.User;
 import com.sky.properties.JwtProperties;
 import com.sky.result.Result;
@@ -54,4 +55,5 @@ public class UserController {
                 .token(token).build();
         return Result.success(userLoginVO);
     }
+
 }
