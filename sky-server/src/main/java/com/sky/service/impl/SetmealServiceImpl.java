@@ -69,7 +69,7 @@ public class SetmealServiceImpl implements SetmealService {
         //启售的不能删除
         for (Long id : ids) {
             Setmeal setmeal = setmealMapper.getById(id);
-            if(setmeal.getStatus() == StatusConstant.ENABLE){
+            if(setmeal.getStatus().equals(StatusConstant.ENABLE)){
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
             }
         }
@@ -88,7 +88,7 @@ public class SetmealServiceImpl implements SetmealService {
         //如果套餐内包含未启售的菜品，则无法启售套餐
         setmealDishes.forEach(setmealDish -> {
             Dish dish = dishMapper.getById(setmealDish.getDishId());
-            if(dish.getStatus() == StatusConstant.DISABLE && status == StatusConstant.ENABLE){
+            if(dish.getStatus().equals(StatusConstant.DISABLE) && status.equals(StatusConstant.ENABLE)){
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
             }
         });

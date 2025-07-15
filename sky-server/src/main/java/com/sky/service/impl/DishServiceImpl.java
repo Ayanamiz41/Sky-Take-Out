@@ -80,7 +80,7 @@ public class DishServiceImpl implements DishService {
         //启售的不能删除
         for (Long id : ids) {
             Dish dish = dishMapper.getById(id);
-            if(dish.getStatus() == StatusConstant.ENABLE){
+            if(dish.getStatus().equals(StatusConstant.ENABLE)){
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
