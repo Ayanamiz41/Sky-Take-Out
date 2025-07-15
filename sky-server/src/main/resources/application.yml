@@ -41,8 +41,17 @@ sky:
     admin-ttl: 7200000000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    # 设置jwt签名加密时使用的秘钥
+    user-secret-key: Ayanami
+    # 设置jwt过期时间
+    user-ttl: 7200000000
+    # 设置前端传递过来的令牌名称
+    user-token-name: authentication
   huaweiobs:
     endpoint: ${sky.huaweiobs.endpoint}
     access-key-id: ${sky.huaweiobs.access-key-id}
     access-key-secret: ${sky.huaweiobs.access-key-secret}
     bucket-name: ${sky.huaweiobs.bucket-name}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
