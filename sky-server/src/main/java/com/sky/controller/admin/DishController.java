@@ -33,6 +33,8 @@ public class DishController {
     public Result saveWithFlavor(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品:{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
+        String key = "dish_"+dishDTO.getCategoryId();
+        dishService.cleanCache(key);
         return  Result.success();
     }
     /**
@@ -57,6 +59,7 @@ public class DishController {
     public Result delete(@RequestParam List<Long> ids){
         log.info("批量删除菜品：{}",ids);
         dishService.deleteBatch(ids);
+        dishService.cleanCache("dish_*");
         return Result.success();
     }
     /**
@@ -82,6 +85,7 @@ public class DishController {
     public Result update(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品:{}",dishDTO);
         dishService.updateWithFlavor(dishDTO);
+        dishService.cleanCache("dish_*");
         return Result.success();
     }
 
@@ -109,6 +113,7 @@ public class DishController {
     public Result updateStatus(@PathVariable Integer status,Long id){
         log.info("修改菜品状态,id:{},status:{}",id,status);
         dishService.updateStatus(status,id);
+        dishService.cleanCache("dish_*");
         return  Result.success();
     }
 }

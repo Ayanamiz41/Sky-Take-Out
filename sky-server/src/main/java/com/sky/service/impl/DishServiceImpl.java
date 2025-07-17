@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -38,6 +40,8 @@ public class DishServiceImpl implements DishService {
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+    @Autowired
+    private RedisTemplate  redisTemplate;
     /**
      * 新增菜品
      * @param dishDTO
@@ -164,21 +168,39 @@ public class DishServiceImpl implements DishService {
      * @return
      */
     public List<DishVO> listWithFlavor(Dish dish) {
-        List<Dish> dishList = dishMapper.getByCategoryId(dish.getCategoryId());
 
-        List<DishVO> dishVOList = new ArrayList<>();
+        //构造redis中的key，规则:dish_分类id
+        String key = "dish_" + dish.getCategoryId();
 
-        for (Dish d : dishList) {
-            DishVO dishVO = new DishVO();
-            BeanUtils.copyProperties(d,dishVO);
+        //查询redis中是否存在菜品数据
+        List<DishVO> dishVOList = (List<DishVO>) redisTemplate.opsForValue().get(key);
 
-            //根据菜品id查询对应的口味
-            List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
-
-            dishVO.setFlavors(flavors);
-            dishVOList.add(dishVO);
+        if (dishVOList != null && dishVOList.size() > 0) {
+            //如果存在，直接返回，无需查询数据库
+            return dishVOList;
+        } else {
+            dishVOList = new ArrayList<>();
+            //否则查询数据库，将查询到的数据放入redis中，并返回
+            List<Dish> dishList = dishMapper.list(dish);
+            for (Dish d : dishList) {
+                DishVO dishVO = new DishVO();
+                BeanUtils.copyProperties(d, dishVO);
+                //根据菜品id查询对应的口味
+                List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
+                dishVO.setFlavors(flavors);
+                dishVOList.add(dishVO);
+            }
+            redisTemplate.opsForValue().set(key, dishVOList);
+            return dishVOList;
         }
+    }
 
-        return dishVOList;
+    /**
+     * 清理缓存数据
+     * @param pattern
+     */
+    public void cleanCache(String pattern) {
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 }

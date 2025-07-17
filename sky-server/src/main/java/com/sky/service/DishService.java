@@ -61,4 +61,10 @@ public interface DishService {
      * @return
      */
     List<DishVO> listWithFlavor(Dish dish);
+
+    /**
+     * 清理缓存
+     * @param pattern
+     */
+    void cleanCache(String pattern);
 }
