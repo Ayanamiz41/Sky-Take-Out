@@ -275,7 +275,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      * @return
      */
-    public String getOrderDishesStr(Long id) {
+    private String getOrderDishesStr(Long id) {
         // 查询订单菜品详情信息（订单中的菜品和数量）
         List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
 
@@ -405,7 +405,7 @@ public class OrderServiceImpl implements OrderService {
      * @param id
      * @return
      */
-    public String getAddressStr(Long id){
+    private String getAddressStr(Long id){
         AddressBook addressBook = addressBookMapper.getById(id);
         if(addressBook==null){
             return "";

@@ -40,12 +40,7 @@ public interface OrderService {
      */
     PageResult pageQuery(OrdersPageQueryDTO ordersPageQueryDTO);
 
-    /**
-     * 根据订单id获取菜品信息字符串
-     * @param id
-     * @return
-     */
-    String getOrderDishesStr(Long id);
+
 
     /**
      * 各个状态的订单数量统计
@@ -94,12 +89,6 @@ public interface OrderService {
      */
     void complete(Long id);
 
-    /**
-     * 根据id查询地址簿，并返回地址串
-     * @param id
-     * @return
-     */
-    String getAddressStr(Long id);
 
     /**
      * 查询历史订单
